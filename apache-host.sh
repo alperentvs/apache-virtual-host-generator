@@ -21,6 +21,7 @@ then
         sites_enabled="/etc/apache2/sites-enabled"
         sites_available="/etc/apache2/sites-available"
         mainconf="/etc/apache2/apache2.conf"
+        restart_server="systemctl restart apache2 2> /dev/null"
     elif grep -q CentOS /etc/os-release
     then
         echo "Our distro is CentOS"
@@ -29,6 +30,7 @@ then
         sites_enabled="/etc/httpd/sites-enabled"
         sites_available="/etc/httpd/sites-available"
         mainconf="/etc/httpd/conf/httpd.conf"
+        restart_server="systemctl restart httpd 2> /dev/null"
     fi
     #TODO CentOS will be added
 else
@@ -190,7 +192,7 @@ EOF
             then
                 echo "Web site enabled."
                 echo "Restarting Apache..."
-                systemctl restart apache2 2> /dev/null
+                $(${restart_server})
                 #Check if Apache restarted:
                 if [[ $? -eq 0 ]]
                 then
