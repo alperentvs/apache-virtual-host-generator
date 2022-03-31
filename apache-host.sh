@@ -19,6 +19,14 @@ then
         sites_enabled="/etc/apache2/sites-enabled"
         sites_available="/etc/apache2/sites-available"
         mainconf="/etc/apache2/apache2.conf"
+    elif grep -q CentOS /etc/os-release
+    then
+        echo "Our distro is CentOS"
+        OSname="CentOS"
+        apache_bin="/usr/sbin/httpd"
+        sites_enabled="/etc/httpd/sites-enabled"
+        sites_available="/etc/httpd/sites-available"
+        mainconf="/etc/httpd/conf/httpd.conf"
     fi
     #TODO CentOS will be added
 else
