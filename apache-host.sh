@@ -126,7 +126,7 @@ EOF
             then
                 echo "Web site enabled."
                 echo "Restarting Apache..."
-                systemctl restart apache2
+                systemctl restart apache2 2> /dev/null
                 #Check if Apache restarted:
                 if [[ $? -eq 0 ]]
                 then
