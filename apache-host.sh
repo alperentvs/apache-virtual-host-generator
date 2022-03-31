@@ -208,10 +208,10 @@ EOF
                     then
                         echo -e "127.0.0.1\t${url}" >> /etc/hosts
                     fi
-                    echo "You may need to configure SELinux to serve Apache directories. Consider this as a tip if your Apache could not be restarted."
                     echo "Bye!"
                 else
                     echo "Could not restart Apache. You may want to check 'journalctl -xe' for further information."
+                    echo "You may need to configure SELinux to serve Apache directories. Consider this as a tip if your Apache could not be restarted."
                 fi
             else
                 echo "Could not enable web site. Maybe ${sites_enabled}/${url}.conf link already exists?"
