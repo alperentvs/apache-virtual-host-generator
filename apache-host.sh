@@ -131,6 +131,13 @@ EOF
                 if [[ $? -eq 0 ]]
                 then
                     echo "Apache restarted successfully. You can now access your web site ${url}"
+                    #/etc/hosts control:
+                    printf "Do you want to add ${url} to your /etc/hosts file with 127.0.0.1 [y/n]: "
+                    read dns_add
+                    if [[ ${dns_add} == "y" ]]
+                    then
+                        echo -e "127.0.0.1\t${url}" >> /etc/hosts
+                    fi
                     echo "Bye!"
                 else
                     echo "Could not restart Apache. You may want to check 'journalctl -xe' for further information."
