@@ -16,3 +16,13 @@
 * Then creates a virtual host configuration under proper directories and restarts your Apache.
 * Lastly, creates a DNS record with 127.0.0.1 under `/etc/hosts` if desired.
 * You may choose to enable your new configuration later.
+
+## Screenshots
+### Usage
+![Apache Virtual Host Generator](screenshots/usage.png)
+
+### Generated Files
+![Apache Virtual Host Generator](screenshots/file_list.png)
+
+### Result
+![Apache Virtual Host Generator](screenshots/result.png)
