@@ -49,6 +49,9 @@ delete()
     then
         echo "Disabled virtual host (${sites_enabled}/${1}.conf)."
     fi
+    sed -i '/'${1}'/d' /etc/hosts
+    echo "Deleted /etc/hosts record."
+    echo "Done!"
 }
 
 OSname="null"
