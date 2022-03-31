@@ -1,6 +1,7 @@
 #! /bin/bash
 
 OSname="null"
+mainconf="/etc/apache2/apache2.conf"
 
 if [[ -f /etc/os-release ]]
 then
@@ -31,5 +32,17 @@ then
 	then
 		mkdir /etc/apache2/sites-available && echo "/etc/apache2/sites-available directory created."
 		chmod 755 /etc/apache2/sites-available
+	fi
+
+	if [[ ! -f ${mainconf} ]]
+	then
+		echo "Can't find Apache configuration file. Terminating."
+		exit
+	elif ! grep -Fq 'IncludeOptional sites-enabled/*.conf' ${mainconf}
+	then
+		echo "IncludeOptional sites-enabled/*.conf" >> ${mainconf}
+		echo "Enabled Virtual Host includes in ${mainconf}"
+	else
+		echo "Virtual Host is already enabled in ${mainconf}"
 	fi
 fi
