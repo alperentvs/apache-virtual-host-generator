@@ -208,6 +208,7 @@ EOF
                     then
                         echo -e "127.0.0.1\t${url}" >> /etc/hosts
                     fi
+                    echo "You may need to configure SELinux to serve Apache directories. Consider this as a tip if your Apache could not be restarted."
                     echo "Bye!"
                 else
                     echo "Could not restart Apache. You may want to check 'journalctl -xe' for further information."
@@ -222,6 +223,7 @@ EOF
             echo "ln -s ${sites_available}/${url}.conf ${sites_enabled}/${url}.conf"
             echo ""
             echo "Don't forget to restart Apache service."
+            echo "You may need to configure SELinux to serve Apache directories. Consider this as a tip if your Apache could not be restarted."
         fi #End enabling virtual host
     fi #End virtual host configuration
 fi #End Ubuntu
