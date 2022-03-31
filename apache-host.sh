@@ -3,6 +3,13 @@
 OSname="null"
 mainconf="/etc/apache2/apache2.conf"
 
+#Root control:
+if [[ $(id -u) -ne 0 ]]
+then
+	echo "You must run this script as super user."
+	exit
+fi
+
 #Check whether os-release file exist:
 if [[ -f /etc/os-release ]]
 then
