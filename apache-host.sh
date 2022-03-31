@@ -92,7 +92,7 @@ fi
 
 
 #Virtual host configuration steps for Ubuntu:
-if [[ ${OSname} == "Ubuntu" ]]
+if [[ ${OSname} == "Ubuntu" || ${OSname} == "CentOS" ]]
 then
     #Check whether apache2 binary is exist:
     if [[ ! -f ${apache_bin} ]]
