@@ -18,6 +18,9 @@ then
     then
         echo "Our distro is Ubuntu"
         OSname="Ubuntu"
+        apache_bin="/usr/sbin/apache2"
+        sites_enabled="/etc/apache2/sites-enabled"
+        sites_available="/etc/apache2/sites-available"
     fi
     #TODO CentOS will be added
 else
@@ -29,25 +32,25 @@ fi
 if [[ ${OSname}=="Ubuntu" ]]
 then
     #Check whether apache2 binary is exist:
-    if [[ ! -f /usr/sbin/apache2 ]]
+    if [[ ! -f ${apache_bin} ]]
     then
         echo "Seems like Apache is not installed. Terminating."
         exit
     fi
     
     #Check for sites-enabled and sites-available directories:
-    if [[ ! -d /etc/apache2/sites-enabled ]]
+    if [[ ! -d ${sites_enabled} ]]
     then
         #Create directory with proper permissions:
-        mkdir /etc/apache2/sites-enabled && echo "/etc/apache2/sites-enabled directory created."
-        chmod 755 /etc/apache2/sites-enabled
+        mkdir ${sites_enabled} && echo "${sites_enabled} directory created."
+        chmod 755 ${sites_enabled}
     fi
 
-    if [[ ! -d /etc/apache2/sites-available ]]
+    if [[ ! -d ${sites_available} ]]
     then
         #Create directory with proper permissions:
-        mkdir /etc/apache2/sites-available && echo "/etc/apache2/sites-available directory created."
-        chmod 755 /etc/apache2/sites-available
+        mkdir ${sites_available} && echo "${sites_available} directory created."
+        chmod 755 ${sites_available}
     fi
     
     #Check whether Apache configuration is exist:
@@ -91,16 +94,16 @@ then
     fi
     
     #Check whether a virtual host configuration already exists for new web site:
-    if [[ -f /etc/apache2/sites-available/${url}.conf ]]
+    if [[ -f ${sites_available}/${url}.conf ]]
     then
         #There's a configuration. Don't overwrite it. Exit:
-        echo "A virtual host configuration file already exists at /etc/apache2/sites-available/${url}.conf"
+        echo "A virtual host configuration file already exists at ${sites_available}/${url}.conf"
         echo "Terminating."
         exit
     else
         #Create new virtual host configuration file:
         echo "Generating virtual host configuration file..."
-        cat << EOF > /etc/apache2/sites-available/${url}.conf
+        cat << EOF > ${sites_available}/${url}.conf
 <VirtualHost *:80>
     ServerName ${url}
     ServerAlias ${alias}
@@ -109,7 +112,7 @@ then
     CustomLog /var/www/${url}/log/access.log combined
 </VirtualHost>
 EOF
-        echo "Virtual host configuration generated at /etc/apache2/sites-available/${url}.conf"
+        echo "Virtual host configuration generated at ${sites_available}/${url}.conf"
 
         #Enable new web site or not:
         printf "Do you want to enable your new web site (${url}) [y/n]: "
@@ -117,7 +120,7 @@ EOF
         #Enable web site with symbolic link:
         if [[ ${enableanswer} == "y" ]]
         then
-            ln -s /etc/apache2/sites-available/${url}.conf /etc/apache2/sites-enabled/${url}.conf 2> /dev/null
+            ln -s ${sites_available}/${url}.conf ${sites_enabled}/${url}.conf 2> /dev/null
             #Check whether link created:
             if [[ $? -eq 0 ]]
             then
@@ -133,13 +136,13 @@ EOF
                     echo "Could not restart Apache. You may want to check 'journalctl -xe' for further information."
                 fi
             else
-                echo "Could not enable web site. Maybe /etc/apache2/sites-enabled/${url}.conf link already exists?"
+                echo "Could not enable web site. Maybe ${sites_enabled}/${url}.conf link already exists?"
             fi
         else
-            echo "You have to link /etc/apache2/sites-available/${url}.conf under /etc/apache2/sites-enabled directory to enable your virtual host."
+            echo "You have to link ${sites_available}/${url}.conf under ${sites_enabled} directory to enable your virtual host."
             echo ""
             echo "You can use this command:"
-            echo "ln -s /etc/apache2/sites-available/${url}.conf /etc/apache2/sites-enabled/${url}.conf"
+            echo "ln -s ${sites_available}/${url}.conf ${sites_enabled}/${url}.conf"
             echo ""
             echo "Don't forget to restart Apache service."
         fi #End enabling virtual host
