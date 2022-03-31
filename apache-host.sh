@@ -1,8 +1,5 @@
 #! /bin/bash
 
-OSname="null"
-mainconf="/etc/apache2/apache2.conf"
-
 #Root control:
 if [[ $(id -u) -ne 0 ]]
 then
@@ -21,12 +18,64 @@ then
         apache_bin="/usr/sbin/apache2"
         sites_enabled="/etc/apache2/sites-enabled"
         sites_available="/etc/apache2/sites-available"
+        mainconf="/etc/apache2/apache2.conf"
     fi
     #TODO CentOS will be added
 else
     echo "Can't find /etc/os-release file. Terminating."
     exit
 fi
+
+#Web site delete function:
+delete()
+{
+	#Delete web site contents and configuration
+	echo "Deleting web site: ${1}"
+    echo "Trying to delete content:"
+    rm -rf /var/www/${1}
+    if [[ $? -eq 0 ]]
+    then
+        echo "Deleted content at /var/www/${1}"
+    fi
+    echo "Trying to delete virtual host configuration:"
+    rm -rf ${sites_available}/${1}.conf
+    if [[ $? -eq 0 ]]
+    then
+        echo "Deleted virtual host configuration (${sites_available}/${1}.conf)."
+    fi
+    echo "Trying to disable virtual host:"
+    rm -rf ${sites_enabled}/${1}.conf
+    if [[ $? -eq 0 ]]
+    then
+        echo "Disabled virtual host (${sites_enabled}/${1}.conf)."
+    fi
+}
+
+OSname="null"
+#Get argument count:
+declare -i arg_count=$#
+
+if [[ ${arg_count} -eq 2 ]]
+then
+    #User might want to delete web site:
+    if [[ ${1} = "--delete" ]]
+    then
+        delete ${2}
+        exit
+    else
+        echo "Unknown parameter. Terminating."
+        exit
+    fi
+elif [[ ${arg_count} -eq 1 ]]
+then
+    echo "Too few arguments."
+    exit
+elif [[ ${arg_count} -ge 3 ]]
+then
+    echo "Too many arguments."
+    exit
+fi
+
 
 #Virtual host configuration steps for Ubuntu:
 if [[ ${OSname}=="Ubuntu" ]]
@@ -84,6 +133,7 @@ then
     if [[ -d /var/www/${url} ]]
     then
         echo "Web site ${url} is already exists under /var/www/${url}. Terminating."
+        echo "You can use --delete URL to delete web site"
         exit
     else
         #Create html and log directories for new web site:
@@ -100,6 +150,7 @@ then
         #There's a configuration. Don't overwrite it. Exit:
         echo "A virtual host configuration file already exists at ${sites_available}/${url}.conf"
         echo "Terminating."
+        echo "You can use --delete URL to delete web site"
         exit
     else
         #Create new virtual host configuration file:
