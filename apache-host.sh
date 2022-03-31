@@ -7,6 +7,8 @@ then
 	exit
 fi
 
+OSname="null"
+
 #Check whether os-release file exist:
 if [[ -f /etc/os-release ]]
 then
@@ -62,7 +64,6 @@ delete()
     echo "Done!"
 }
 
-OSname="null"
 #Get argument count:
 declare -i arg_count=$#
 
@@ -89,7 +90,7 @@ fi
 
 
 #Virtual host configuration steps for Ubuntu:
-if [[ ${OSname}=="Ubuntu" ]]
+if [[ ${OSname} == "Ubuntu" ]]
 then
     #Check whether apache2 binary is exist:
     if [[ ! -f ${apache_bin} ]]
